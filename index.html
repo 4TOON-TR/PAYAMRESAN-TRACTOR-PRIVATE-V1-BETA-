@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PAYAMRESAN-TRACTOR-V1(BETA)</title>
+    <style>
+        /* ===== استایل‌های عمومی ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            flex-direction: column;
+        }
+
+        /* ===== کانتینر اصلی چت ===== */
+        .chat-container {
+            width: 420px;
+            max-width: 95%;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 600px;
+            max-height: 90vh;
+        }
+
+        /* ===== هدر چت ===== */
+        .chat-header {
+            background: #1877f2;
+            color: white;
+            padding: 16px 20px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        /* ===== محل نمایش پیام‌ها ===== */
+        #messages {
+            list-style-type: none;
+            padding: 16px;
+            margin: 0;
+            flex: 1;
+            overflow-y: auto;
+            background: #fafafa;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        #messages li {
+            padding: 8px 14px;
+            background: #e4e6eb;
+            border-radius: 18px;
+            word-wrap: break-word;
+            max-width: 85%;
+            align-self: flex-start;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        #messages li .sender-name {
+            font-weight: bold;
+            color: #1877f2;
+            font-size: 13px;
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        #messages li .message-text {
+            display: block;
+        }
+
+        /* ===== فرم ورود (انتخاب نام) ===== */
+        #login-form {
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+
+        #login-form h2 {
+            color: #1877f2;
+            font-size: 22px;
+            margin-bottom: 5px;
+        }
+
+        #login-form p {
+            color: #555;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        #login-form input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #ddd;
+            border-radius: 30px;
+            font-size: 16px;
+            outline: none;
+            text-align: center;
+            transition: border-color 0.3s;
+        }
+
+        #login-form input:focus {
+            border-color: #1877f2;
+        }
+
+        #login-form button {
+            width: 100%;
+            padding: 12px;
+            background: #1877f2;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        #login-form button:hover {
+            background: #0d65d9;
+        }
+
+        /* ===== بخش ارسال پیام ===== */
+        .form-container {
+            display: flex;
+            padding: 12px 16px;
+            background: white;
+            border-top: 1px solid #e4e6eb;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+
+        #input {
+            flex: 1;
+            padding: 10px 16px;
+            border: 1px solid #ddd;
+            border-radius: 30px;
+            outline: none;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        #input:focus {
+            border-color: #1877f2;
+        }
+
+        #send-btn {
+            padding: 10px 22px;
+            background: #1877f2;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s;
+            white-space: nowrap;
+        }
+
+        #send-btn:hover {
+            background: #0d65d9;
+        }
+
+        /* ===== پاورقی (فوتر) ===== */
+        .footer {
+            margin-top: 16px;
+            color: #888;
+            font-size: 13px;
+            letter-spacing: 1px;
+            font-weight: 300;
+            text-align: center;
+            padding: 8px 0;
+        }
+
+        .footer span {
+            font-weight: 600;
+            color: #1877f2;
+        }
+
+        /* ===== پیام‌های سیستمی ===== */
+        .system-msg {
+            text-align: center;
+            font-size: 12px;
+            color: #999;
+            font-style: italic;
+            padding: 4px 0 !important;
+            background: transparent !important;
+            align-self: center !important;
+            max-width: 100% !important;
+        }
+
+        /* ===== واکنش‌گرایی ===== */
+        @media (max-width: 480px) {
+            .chat-container {
+                height: 95vh;
+                max-height: 95vh;
+                border-radius: 12px;
+            }
+            .chat-header {
+                font-size: 16px;
+                padding: 12px 16px;
+            }
+            #login-form h2 {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== کانتینر اصلی ===== -->
+    <div class="chat-container">
+
+        <!-- هدر -->
+        <div class="chat-header">
+            💬 چت گروهی
+        </div>
+
+        <!-- ===== فرم ورود (انتخاب نام) ===== -->
+        <div id="login-form">
+            <h2>👋 خوش آمدی!</h2>
+            <p>یک اسم برای خودت انتخاب کن تا بقیه بشناسنت</p>
+            <input type="text" id="username-input" placeholder="مثلاً: علی" maxlength="20" autofocus>
+            <button id="login-btn">ورود به چت</button>
+        </div>
+
+        <!-- ===== بخش پیام‌ها (در ابتدا مخفی) ===== -->
+        <ul id="messages" style="display: none;"></ul>
+
+        <!-- ===== فرم ارسال پیام (در ابتدا مخفی) ===== -->
+        <div class="form-container" id="message-form" style="display: none;">
+            <input id="input" placeholder="پیامت را بنویس..." autocomplete="off" />
+            <button id="send-btn">ارسال</button>
+        </div>
+
+    </div>
+
+    <!-- ===== فوتر ===== -->
+    <div class="footer">
+        POWERED BY <span>4TOON</span>
+    </div>
+
+    <!-- ===== کتابخانه Socket.IO ===== -->
+    <script src="https://cdn.socket.io/4.6.1/socket.io.min.js">
+    </script>
+
+    <script>
+        // ================================================================
+        //  تنظیمات اولیه
+        // ================================================================
+
+        // *** مهم: آدرس سرور Render خود را اینجا قرار دهید ***
+        const SERVER_URL = 'https://payamresan-tractor-private.onrender.com';
+
+        let socket = null;
+        let myUsername = '';
+
+        // المان‌های DOM
+        const loginForm = document.getElementById('login-form');
+        const usernameInput = document.getElementById('username-input');
+        const loginBtn = document.getElementById('login-btn');
+        const messagesUl = document.getElementById('messages');
+        const messageForm = document.getElementById('message-form');
+        const input = document.getElementById('input');
+        const sendBtn = document.getElementById('send-btn');
+
+        // ================================================================
+        //  توابع کمکی
+        // ================================================================
+
+        function addMessage(username, text, isSystem = false) {
+            const li = document.createElement('li');
+
+            if (isSystem) {
+                li.className = 'system-msg';
+                li.textContent = text;
+            } else {
+                const nameSpan = document.createElement('span');
+                nameSpan.className = 'sender-name';
+                nameSpan.textContent = username + ' :';
+
+                const textSpan = document.createElement('span');
+                textSpan.className = 'message-text';
+                textSpan.textContent = text;
+
+                li.appendChild(nameSpan);
+                li.appendChild(textSpan);
+            }
+
+            messagesUl.appendChild(li);
+            messagesUl.scrollTop = messagesUl.scrollHeight;
+        }
+
+        function showChat() {
+            loginForm.style.display = 'none';
+            messagesUl.style.display = 'flex';
+            messageForm.style.display = 'flex';
+            input.focus();
+        }
+
+        // ================================================================
+        //  اتصال به سرور و ورود به چت
+        // ================================================================
+
+        function connectAndJoin() {
+            const username = usernameInput.value.trim();
+            if (!username) {
+                alert('لطفاً یک اسم برای خودت انتخاب کن!');
+                return;
+            }
+
+            myUsername = username;
+
+            // اتصال به سرور Socket.IO
+            socket = io(SERVER_URL);
+
+            socket.on('connect', () => {
+                console.log('✅ به سرور متصل شدیم');
+
+                // به همه اعلام کن که کاربر جدید وارد شده
+                socket.emit('user joined', myUsername);
+
+                // نمایش پیام خوش‌آمدگویی فقط برای خود کاربر
+                addMessage(null, '🌟 به چت خوش آمدی، ' + myUsername + '!', true);
+
+                showChat();
+            });
+
+            // دریافت پیام‌های چت از سرور
+            socket.on('chat message', (data) => {
+                // data شامل { username, text } است
+                if (data.username !== myUsername) {
+                    addMessage(data.username, data.text);
+                }
+            });
+
+            // دریافت اعلان‌های سیستمی (ورود/خروج کاربران)
+            socket.on('system message', (msg) => {
+                addMessage(null, msg, true);
+            });
+
+            socket.on('disconnect', () => {
+                addMessage(null, '❌ ارتباط با سرور قطع شد!', true);
+            });
+
+            socket.on('connect_error', (err) => {
+                alert('❗ اتصال به سرور ممکن نیست. آدرس سرور را بررسی کن.');
+                console.error('Connection error:', err);
+            });
+        }
+
+        // ================================================================
+        //  رویدادهای فرم ورود
+        // ================================================================
+
+        loginBtn.addEventListener('click', connectAndJoin);
+
+        usernameInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                connectAndJoin();
+            }
+        });
+
+        // ================================================================
+        //  رویدادهای ارسال پیام
+        // ================================================================
+
+        function sendMessage() {
+            const text = input.value.trim();
+            if (text && socket && socket.connected) {
+                // پیام را برای سرور می‌فرستیم
+                socket.emit('chat message', {
+                    username: myUsername,
+                    text: text
+                });
+
+                // خودمان هم پیام را در صفحه نمایش می‌دهیم
+                addMessage(myUsername, text);
+
+                input.value = '';
+                input.focus();
+            } else if (!socket || !socket.connected) {
+                alert('❗ ارتباط با سرور برقرار نیست. صفحه را رفرش کن.');
+            }
+        }
+
+        sendBtn.addEventListener('click', sendMessage);
+
+        input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // ================================================================
+        //  (اختیاری) وقتی صفحه بسته می‌شود، به سرور اعلام کن
+        // ================================================================
+
+        window.addEventListener('beforeunload', () => {
+            if (socket && socket.connected) {
+                socket.emit('user left', myUsername);
+            }
+        });
+
+        console.log('✅ چت‌روم ۴TOON آماده است!');
+    </script>
+
+</body>
+</html>
